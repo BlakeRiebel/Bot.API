@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using DiscordBot.Core.Classes.Settings;
 using DiscordBot.Core.Services.Interfaces;
 using DiscordBot.Data.Entities;
 using DiscordIntegration.Classes.Modules;
@@ -20,10 +21,10 @@ namespace DiscordIntegration.Classes
         private readonly IServiceProvider _services;
         private readonly IInfusedRealityServices _appServices;
 
-        private const ulong GUILD_ID = 957142561225588788;
-        private const ulong LIVE_NOTIFICATION_CHANNEL_ID = 957217619952414810;
+        private readonly ulong GUILD_ID;
+        private readonly ulong LIVE_NOTIFICATION_CHANNEL_ID;
 
-        public CommandController(IServiceProvider services, IInfusedRealityServices appServices)
+        public CommandController(IServiceProvider services, IInfusedRealityServices appServices, DiscordSettings settings)
         {
             _commands = new CommandService(new CommandServiceConfig()
             {
@@ -37,6 +38,9 @@ namespace DiscordIntegration.Classes
             });
 
             _appServices = appServices;
+
+            GUILD_ID = ulong.Parse(settings.ServerGuildId);
+            LIVE_NOTIFICATION_CHANNEL_ID = ulong.Parse(settings.TwitchNotificationsChannelID);
 
             TwitchPubSubController.StreamStarted += StreamStarted;
             TwitchPubSubController.StreamEnded += StreamEnded;
@@ -55,6 +59,8 @@ namespace DiscordIntegration.Classes
             _commands.AddModuleAsync<ChatToolsModule>(services);
             _commands.AddModuleAsync<UserTextCommandModule>(services);
             _commands.AddModuleAsync<TwitchChannelModule>(services);
+            _commands.AddModuleAsync<GameLibraryModule>(services);
+            _commands.AddModuleAsync<HelpModule>(services);
         }
 
         private async Task HandleCommandAsync(SocketMessage arg)
@@ -98,16 +104,19 @@ namespace DiscordIntegration.Classes
             await Task.CompletedTask;
         }
 
-        private async void StreamStarted(object sender, TwitchChannels channel)
+        private async void StreamStarted(object sender, TwitchChannel channel)
         {
             var textchannel = Client.GetGuild(GUILD_ID)
                                 .TextChannels.Where(c => c.Id == LIVE_NOTIFICATION_CHANNEL_ID).FirstOrDefault();
-            
-            var subUsers = _appServices.GetUsersService().GetAll().Where(w => w.Subscriptions.Contains(string.Format(",{0},", channel.SubscriptionId)) 
-                                                    || w.Subscriptions.Contains(string.Format("{0},", channel.SubscriptionId))).ToList();
 
-            subUsers.ForEach(user =>
+            var subscriptions = _appServices.GetTwitchNotificationService().GetAll().Where(w => w.ChannelId == channel.Id).ToList();
+
+
+
+            subscriptions.ForEach(subscription =>
             {
+                var user = _appServices.GetUsersService().GetAll().Where(w => w.UserId == subscription.UserId).FirstOrDefault();
+
                 var discordUser = Client.GetGuild(GUILD_ID).GetUser(ulong.Parse(user.DiscordId));
 
                 if (discordUser != null)
@@ -118,7 +127,7 @@ namespace DiscordIntegration.Classes
             textchannel.SendMessageAsync(channel.LiveMessage);
         }
 
-        private async void StreamEnded(object sender, TwitchChannels channel)
+        private async void StreamEnded(object sender, TwitchChannel channel)
         {
             var textchannel = Client.GetGuild(GUILD_ID)
                                 .TextChannels.Where(c => c.Id == LIVE_NOTIFICATION_CHANNEL_ID).FirstOrDefault();

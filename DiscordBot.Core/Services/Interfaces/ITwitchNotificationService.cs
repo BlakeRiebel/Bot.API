@@ -2,7 +2,7 @@
 
 namespace DiscordBot.Core.Services.Interfaces
 {
-    public interface ISubscriptionsService : IGenericService<Subscriptions>
+    public interface ITwitchNotificationService : IGenericService<TwitchNotification>
     {
     }
 }

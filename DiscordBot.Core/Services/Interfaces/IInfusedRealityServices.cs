@@ -2,9 +2,13 @@
 {
     public interface IInfusedRealityServices
     {
+        IAppSettingService GetAppSettingService();
+        IDiscordCommandService GetDiscordCommandService();
         IEventLogService GetEventLogService();
-        ISubscriptionsService GetSubscriptionsService();
+        IGameCollectionService GetGameCollectionService();
+        IGamesService GetGamesService();
         ITwitchChannelsService GetTwitchChannelsService();
+        ITwitchNotificationService GetTwitchNotificationService();
         IUsersService GetUsersService();
     }
 }

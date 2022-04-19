@@ -15,19 +15,39 @@ namespace DiscordBot.Core.Services
             _unitOfWork = unitOfWork;
         }
 
+        public IAppSettingService GetAppSettingService()
+        {
+            return (IAppSettingService)GetService("AppSettingService", new AppSettingService(_unitOfWork));
+        }
+
+        public IDiscordCommandService GetDiscordCommandService()
+        {
+            return (IDiscordCommandService)GetService("DiscordCommandService", new DiscordCommandService(_unitOfWork));
+        }
+
         public IEventLogService GetEventLogService()
         {
             return (IEventLogService)GetService("EventLogService", new EventLogService(_unitOfWork));
         }
 
-        public ISubscriptionsService GetSubscriptionsService()
+        public IGamesService GetGamesService()
         {
-            return (ISubscriptionsService)GetService("SubscriptionsService", new SubscriptionsService(_unitOfWork));
+            return (IGamesService)GetService("GamesService", new GamesService(_unitOfWork));
+        }
+
+        public ITwitchNotificationService GetTwitchNotificationService()
+        {
+            return (ITwitchNotificationService)GetService("TwitchNotificationService", new TwitchNotificationService(_unitOfWork));
         }
 
         public ITwitchChannelsService GetTwitchChannelsService()
         {
             return (ITwitchChannelsService)GetService("TwitchChannelsService", new TwitchChannelsService(_unitOfWork));
+        }
+
+        public IGameCollectionService GetGameCollectionService()
+        {
+            return (IGameCollectionService)GetService("GameCollectionService", new GameCollectionService(_unitOfWork));
         }
 
         public IUsersService GetUsersService()

@@ -2,7 +2,7 @@
 
 namespace DiscordBot.Core.Services.Interfaces
 {
-    public interface ITwitchChannelsService : IGenericService<TwitchChannel>
+    public interface IGameCollectionService : IGenericService<GameCollection>
     {
     }
 }

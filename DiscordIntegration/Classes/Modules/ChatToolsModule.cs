@@ -1,23 +1,16 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using Discord.Commands;
 using DiscordBot.Core.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace DiscordIntegration.Classes.Modules
 {
-    public class ChatToolsModule : ModuleBase<SocketCommandContext>
+    public class ChatToolsModule : ModuleWrapper
     {
         private Random rnd = new Random();
-        private IInfusedRealityServices _appServices;
 
-        public ChatToolsModule(IInfusedRealityServices appServices)
-        {
-            _appServices = appServices;
-        }
+        public ChatToolsModule(IInfusedRealityServices appServices) : base(appServices) {}
 
         [Command("RandomUser")]
         [Summary("Selects a random user from the passed in users")]
@@ -40,9 +33,18 @@ namespace DiscordIntegration.Classes.Modules
         [Summary("Returns first or default user")]
         public Task GetUsers()
         {
-            var user = _appServices.GetUsersService().GetAll().FirstOrDefault();
+            var users = GetUsersFromDB();
+            StringWriter writer = new StringWriter();
+            writer.WriteLine("ID    Name        DiscordID");
+            writer.WriteLine("---------------------------");
+            users.ForEach(user =>
+            {
+                var ID = user.UserId.ToString().PadRight(6, ' ');
+                var Name = user.UserName.PadRight(12, ' ');
+                writer.WriteLine(String.Format("{0}{1}{2}", ID, Name, user.DiscordId));
+            });
 
-            return ReplyAsync(String.Format("Name: {0} ID: {1}", user.UserName, user.UserId));
+            return ReplyAsync(writer.ToString());
         }
     }
 }

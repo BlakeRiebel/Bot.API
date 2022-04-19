@@ -32,11 +32,6 @@ namespace DiscordBot.Data.UnitofWork
             return await Context.SaveChangesAsync();
         }
 
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         public void Rollback()
         {
             Context.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());

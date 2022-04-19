@@ -1,4 +1,5 @@
-﻿using DiscordBot.Core.Helpers;
+﻿using DiscordBot.Core.Classes.Settings;
+using DiscordBot.Core.Helpers;
 using DiscordBot.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,8 +40,10 @@ namespace DiscordBot.Core.Extensions
                 .CreateScope()
                 .ServiceProvider;
 
-            using (DiscordBotDBContext erpIntegrationContext = MyServiceProvider.ServiceProvider.GetService<DiscordBotDBContext>())
+            using (DiscordBotDBContext dicordBotcontext = MyServiceProvider.ServiceProvider.GetService<DiscordBotDBContext>())
             {
+                services.AddSingleton(new DiscordSettings().PopulateSettings(dicordBotcontext));
+
                 services.AddUnitOfWork<DiscordBotDBContext>();
                 services.AddServices<DiscordBotDBContext>();
             }

@@ -5,9 +5,9 @@ using DiscordBot.Data.Interfaces;
 
 namespace DiscordBot.Core.Services
 {
-    public class SubscriptionsService : GenericService<Subscriptions>, ISubscriptionsService
+    public class GamesService : GenericService<Game>, IGamesService
     {
-        public SubscriptionsService(IUnitOfWork<DiscordBotDBContext> unitOfWork) : base(unitOfWork)
+        public GamesService(IUnitOfWork<DiscordBotDBContext> unitOfWork) : base(unitOfWork)
         {
         }
     }

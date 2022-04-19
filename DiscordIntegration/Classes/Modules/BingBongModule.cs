@@ -1,13 +1,15 @@
 ﻿using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using DiscordBot.Core.Services.Interfaces;
 using System.Threading.Tasks;
 
 namespace DiscordIntegration.Classes.Modules
 {
-    public class BingBongModule : ModuleBase<SocketCommandContext>
+    public class BingBongModule : ModuleWrapper
     {
+        public BingBongModule(IInfusedRealityServices appServices) : base(appServices)
+        {
+        }
+
         [Command("Bing")]
         [Summary("Ayyyy yoooo")]
         public Task Bing() => ReplyAsync("Bong");

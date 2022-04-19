@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DiscordBot.Data.Entities
 {
     [Table("TwitchChannels")]
-    public class TwitchChannels
+    public class TwitchChannel
     {
         [Key]
         [Column("Id")]
@@ -12,8 +13,6 @@ namespace DiscordBot.Data.Entities
 
         [MaxLength(50)]
         public string Name { get; set; }
-
-        public int SubscriptionId { get; set; }
 
         public int TwitchId { get; set; }
 
@@ -25,5 +24,7 @@ namespace DiscordBot.Data.Entities
 
         [MaxLength(250)]
         public string OfflineMessage { get; set; }
+
+        public List<TwitchNotification> Users { get; set; }
     }
 }

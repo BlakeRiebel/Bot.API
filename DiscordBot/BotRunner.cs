@@ -1,4 +1,5 @@
-﻿using DiscordBot.Core.Services.Interfaces;
+﻿using DiscordBot.Core.Classes.Settings;
+using DiscordBot.Core.Services.Interfaces;
 using DiscordBot.Interfaces;
 using DiscordIntegration.Classes;
 using Microsoft.Extensions.Logging;
@@ -23,13 +24,14 @@ namespace DiscordBot
 
         private IInfusedRealityServices _appServices;
 
-        public BotRunner(ILogger<BotRunner> logger, IServiceProvider services, IInfusedRealityServices appServices)
+        public BotRunner(ILogger<BotRunner> logger, IServiceProvider services, IInfusedRealityServices appServices, DiscordSettings settings)
         {
             _logger = logger;
-            _botController = new DiscordBotController(services, appServices);
+            _botController = new DiscordBotController(services, appServices, settings);
             _discordCancellation = new CancellationToken();
 
             _twitchPubSub = new TwitchPubSubController(appServices);
+            _twitchCancellation = new CancellationToken();
             _appServices = appServices;
         }
 
@@ -42,7 +44,7 @@ namespace DiscordBot
 
                 while (!_discordTask.IsCompleted && !_twitchTask.IsCompleted)
                 {
-                    var x = 5;
+                    
                 }
             }
             catch (Exception ex)

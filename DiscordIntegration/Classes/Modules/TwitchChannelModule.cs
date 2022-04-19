@@ -1,25 +1,13 @@
 ﻿using Discord.Commands;
 using DiscordBot.Core.Services.Interfaces;
-using DiscordBot.Data.Entities;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DiscordIntegration.Classes.Modules
 {
-    public class TwitchChannelModule : ModuleBase<SocketCommandContext>
+    public class TwitchChannelModule : ModuleWrapper
     {
-        private IInfusedRealityServices _appServices;
-
-        private const string TwitchLiveMessageTemplate = "{0}'s Stream has started!\n https://www.twitch.tv/{0}";
-        private const string TwitchOfflineMessageTemplate = "{0}'s Stream has ended! \n https://www.twitch.tv/{0}";
-        private const string TwitchURLTemplate = "https://www.twitch.tv/{0}";
-
-        public TwitchChannelModule(IInfusedRealityServices appServices)
-        {
-            _appServices = appServices;
-        }
+        public TwitchChannelModule(IInfusedRealityServices appServices) : base(appServices) {}
 
         [Command("AddTwitchChannel")]
         [Summary("Adds a new twitch to the bots system")]
@@ -27,16 +15,7 @@ namespace DiscordIntegration.Classes.Modules
         {
             try
             {
-                var newChannel = new TwitchChannels()
-                {
-                    Name = username,
-                    Url = String.Format(TwitchURLTemplate, username),
-                    TwitchId = twitchID,
-                    LiveMessage = String.Format(TwitchLiveMessageTemplate, username),
-                    OfflineMessage = String.Format(TwitchOfflineMessageTemplate, username),
-                };
-
-                _appServices.GetTwitchChannelsService().Insert(newChannel);
+                AddTwitchChannel(username, twitchID);
             }
             catch (Exception ex)
             {
@@ -44,6 +23,22 @@ namespace DiscordIntegration.Classes.Modules
             }
 
             return ReplyAsync(String.Format("{0} has been added!", username));
+        }
+
+        [Command("RemoveTwitchChannel")]
+        [Summary("Adds a new twitch to the bots system")]
+        public Task RemoveTwitchChannel(string username)
+        {
+            try
+            {
+                DeleteTwitchChannel(username);
+            }
+            catch (Exception ex)
+            {
+                return ReplyAsync(String.Format("FAILED TO ADD! ERROR: {0}", ex.Message));
+            }
+
+            return ReplyAsync(String.Format("{0} has been Removed!", username));
         }
     }
 }

@@ -5,9 +5,9 @@ using DiscordBot.Data.Interfaces;
 
 namespace DiscordBot.Core.Services
 {
-    public class TwitchChannelsService : GenericService<TwitchChannel>, ITwitchChannelsService
+    public class AppSettingService : GenericService<AppSetting>, IAppSettingService
     {
-        public TwitchChannelsService(IUnitOfWork<DiscordBotDBContext> unitOfWork) : base(unitOfWork)
+        public AppSettingService(IUnitOfWork<DiscordBotDBContext> unitOfWork) : base(unitOfWork)
         {
         }
     }

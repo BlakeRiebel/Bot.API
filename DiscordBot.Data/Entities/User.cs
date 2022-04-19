@@ -19,7 +19,7 @@ namespace DiscordBot.Data.Entities
         [MaxLength(200)]
         public string DiscordId { get; set; }
 
-        [MaxLength(500)]
-        public string Subscriptions { get; set; }
+        public List<GameCollection> GamesLibrary { get; set; }
+        public List<TwitchNotification> TwitchSubs { get; set; }
     }
 }

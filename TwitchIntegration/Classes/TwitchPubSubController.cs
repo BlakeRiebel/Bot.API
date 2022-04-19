@@ -16,10 +16,10 @@ namespace TwitchIntegration.Classes
         private static List<TwitchPubSub> clients;
         private IInfusedRealityServices _appServices;
 
-        public static event EventHandler<TwitchChannels> StreamStarted;
-        public static event EventHandler<TwitchChannels> StreamEnded;
+        public static event EventHandler<TwitchChannel> StreamStarted;
+        public static event EventHandler<TwitchChannel> StreamEnded;
 
-        public static List<TwitchChannels> channels { get; set; }
+        public static List<TwitchChannel> channels { get; set; }
 
         public TwitchPubSubController(IInfusedRealityServices appServices)
         {
@@ -40,7 +40,7 @@ namespace TwitchIntegration.Classes
             channels = _appServices.GetTwitchChannelsService().GetAll().ToList();
         }
 
-        private void CreateClient(TwitchChannels channel)
+        private void CreateClient(TwitchChannel channel)
         {
             var client = new TwitchPubSub();
             client.OnPubSubServiceConnected += onPubSubServiceConnected;

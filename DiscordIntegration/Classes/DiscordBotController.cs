@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using DiscordBot.Core.Classes.Settings;
 using DiscordBot.Core.Services.Interfaces;
 using Serilog;
 using Serilog.Events;
@@ -12,15 +13,17 @@ namespace DiscordIntegration.Classes
     public class DiscordBotController
     {
         private CommandController _commandController;
+        private readonly DiscordSettings _settings;
 
-        public DiscordBotController(IServiceProvider services, IInfusedRealityServices appServices)
+        public DiscordBotController(IServiceProvider services, IInfusedRealityServices appServices, DiscordSettings settings)
         {
-            _commandController = new CommandController(services, appServices);
+            _commandController = new CommandController(services, appServices, settings);
+            _settings = settings;
         }
 
         public async Task Login()
         {
-            await _commandController.Client.LoginAsync(TokenType.Bot, "<NOPE>");
+            await _commandController.Client.LoginAsync(TokenType.Bot, _settings.Token);
         }
 
         public async Task Run()
